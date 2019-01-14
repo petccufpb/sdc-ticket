@@ -14,7 +14,11 @@ import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import blue from '@material-ui/core/colors/blue';
 import pink from '@material-ui/core/colors/pink';
+import * as Yup from 'yup';
+import { connect } from 'react-redux';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
+import { Creators as CreatorsUser } from '../store/ducks/user';
 import { PersonalForm, EducationForm, Review } from '../components';
 import LogoSdcBranca from '../assets/logo-sem-fundo-branca.png';
 
@@ -95,15 +99,121 @@ function getStepContent(step) {
   }
 }
 
+// schemas para validacao
+const nomeSchema = Yup
+  .string()
+  .required('Nome é obrigatório')
+  .min(3, 'Nome deve conter no mínimo 3 caracteres')
+
+const sobreNomeSchema = Yup
+  .string()
+  .required('Sobrenome é obrigatório')
+  .min(3, 'Nome deve conter no mínimo 3 caracteres')
+
+const emailSchema = Yup.string()
+  .email('E-mail inválido')
+  .required('E-mail é obrigatório')
+
+const senhaSchema = Yup.string()
+    .required('Senha é obrigatório')
+    .min(8, 'Sua senha deve conter no mínimo 8 dígitos')
+
+const nomeInstituicaoSchema = Yup.string()
+.required('Nome da Instituição é obrigatório')
+.min(3, 'Nome da Instituição deve conter no mínimo 3 caracteres')
+
+const cursoSchema =  Yup.string()
+  .required('Curso é obrigatório')
+  .min(3, 'Curso deve conter no mínimo 3 caracteres')
+
 class Checkout extends React.Component {
   state = {
     activeStep: 0,
   };
 
-  handleNext = () => {
-    this.setState(state => ({
-      activeStep: state.activeStep + 1,
-    }));
+  async validateNomeSchema() {
+    const self = this;
+    return nomeSchema.validate(this.props.nome).then(() => true).catch(function(err) {
+      self.props.setErrors({ nome: err.errors[0] });
+      //--
+      return false
+    }); 
+  }
+
+  async validateSobreNomeSchema() {
+    const self = this;
+    return sobreNomeSchema.validate(this.props.sobrenome).then(() => true).catch(function(err) {
+      self.props.setErrors({ sobrenome: err.errors[0] });
+      //--
+      return false
+    }); 
+  }
+
+  async validateEmailSchema() {
+    const self = this;
+    return emailSchema.validate(this.props.email).then(() => true).catch(function(err) {
+      self.props.setErrors({ email: err.errors[0] });
+      //--
+      return false
+    }); 
+  }
+
+  async validateSenhaSchema() {
+    const self = this;
+    return senhaSchema.validate(this.props.senha).then(() => true).catch(function(err) {
+      self.props.setErrors({ senha: err.errors[0] });
+      //--
+      return false
+    }); 
+  }
+
+  async validateNomeInstituicaoSchema() {
+    const self = this;
+    return nomeInstituicaoSchema.validate(this.props.nomeInstituicao).then(() => true).catch(function(err) {
+      self.props.setErrors({ nomeInstituicao: err.errors[0] });
+      //--
+      return false
+    }); 
+  }
+
+  async validateCursoSchema() {
+    const self = this;
+    return cursoSchema.validate(this.props.curso).then(() => true).catch(function(err) {
+      self.props.setErrors({ curso: err.errors[0] });
+      //--
+      return false
+    }); 
+  }
+
+
+  handleNext = async() => {
+    if (this.state.activeStep === 0) {
+      const _1 = await this.validateNomeSchema();
+      const _2 = await this.validateSobreNomeSchema();
+      const _3 = await this.validateEmailSchema();
+      const _4 = await this.validateSenhaSchema();
+
+      if (_1 && _2 && _3 && _4) {
+        this.setState(state => ({
+          activeStep: state.activeStep + 1,
+        }));
+      }
+    }
+    else if (this.state.activeStep === 1) {
+      //--
+      const _5 = await this.validateCursoSchema();
+      const _6 = await this.validateNomeInstituicaoSchema();
+
+      if (_5 && _6) {
+        this.setState(state => ({
+          activeStep: state.activeStep + 1,
+        }));
+      }
+    } else {
+      this.setState(state => ({
+        activeStep: state.activeStep + 1,
+      }));
+    }
   };
 
   handleBack = () => {
@@ -200,4 +310,14 @@ Checkout.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Checkout);
+
+const mapStateToProps = state => ({
+  nome: state.userReducer.nome,
+  sobrenome: state.userReducer.sobrenome,
+  senha: state.userReducer.senha,
+  email: state.userReducer.email,
+  nomeInstituicao: state.userReducer.nomeInstituicao,
+  curso: state.userReducer.curso,
+});
+
+export default connect(mapStateToProps, { ...CreatorsUser })(withStyles(styles)(Checkout));

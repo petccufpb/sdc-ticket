@@ -6,6 +6,10 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
+import { connect } from 'react-redux';
+
+import { Creators as CreatorsUser } from '../store/ducks/user';
+
 
 const products = [
   { name: 'Ingresso - 11/02', desc: 'Palestras, Jogos, Corrida de Rôbos, Jam Session', price: 'Grátis' },
@@ -35,7 +39,7 @@ const styles = theme => ({
 });
 
 function Review(props) {
-  const { classes } = props;
+  const { classes, nome, sobrenome, email, curso, nomeInstituicao } = props;
   return (
     <React.Fragment>
       <Typography component="h6" variant="p" gutterBottom>
@@ -60,8 +64,8 @@ function Review(props) {
           <Typography className={classes.title} component="h6" variant="p" gutterBottom>
             {'Dados pessoais'}
           </Typography>
-          <Typography gutterBottom>{'Marcos Henrique Alves da Silva'}</Typography>
-          <Typography gutterBottom>{'alves.henrique.marcos@gmail.com'}</Typography>
+          <Typography gutterBottom>{`${nome} ${sobrenome}`}</Typography>
+          <Typography gutterBottom>{email}</Typography>
         </Grid>
         <Grid item container direction="column" xs={12} sm={6}>
           <Typography className={classes.title} component="h6" variant="p" gutterBottom>
@@ -69,11 +73,11 @@ function Review(props) {
           </Typography>
           <Grid container>
                 <Grid item xs={12}>
-                  <Typography gutterBottom>{'Universidade Federal da Paraíba'}</Typography>
+                  <Typography gutterBottom>{nomeInstituicao}</Typography>
                 </Grid>
               
                 <Grid item xs={12}>
-                  <Typography gutterBottom>{'Ciência da Computação'}</Typography>
+                  <Typography gutterBottom>{curso}</Typography>
                 </Grid>
           </Grid>
         </Grid>
@@ -86,4 +90,14 @@ Review.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Review);
+const mapStateToProps = state => ({
+  nome: state.userReducer.nome,
+  sobrenome: state.userReducer.sobrenome,
+  email: state.userReducer.email,
+  nomeInstituicao: state.userReducer.nomeInstituicao,
+  curso: state.userReducer.curso,
+});
+
+
+
+export default connect(mapStateToProps, { ...CreatorsUser })(withStyles(styles)(Review));

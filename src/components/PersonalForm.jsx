@@ -14,6 +14,9 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { connect } from 'react-redux';
+
+import { Creators as CreatorsUser } from '../store/ducks/user';
 
 const styles = theme => ({
   root: {
@@ -31,15 +34,22 @@ const styles = theme => ({
   },
 });
 
-
 class PersonalForm extends React.Component {
   state = {
     showPassword: false,
     password: '',
   };
 
+  handleClickShowPassword = () => {
+    this.setState(state => ({ showPassword: !state.showPassword }));
+  };
+
+  handleChange = prop => event => {
+    this.props.setDadosFormulario({ [prop]: event.target.value, errors: { ...this.props.errors, [prop]: '' }});
+  };
+
   render() {
-    const { classes } = this.props;
+    const { classes, nome, sobrenome, email, senha, errors} = this.props;
     return (
       <React.Fragment>
         <Typography component="h6" variant="p" gutterBottom>
@@ -52,9 +62,14 @@ class PersonalForm extends React.Component {
               id="firstName"
               name="firstName"
               label="Nome"
+              value={nome}
               fullWidth
               autoComplete="fname"
+              onChange={this.handleChange('nome')}
             />
+            { errors.nome &&
+              <FormHelperText id="name-error-text" error>{errors.nome}</FormHelperText>
+             }
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -62,9 +77,14 @@ class PersonalForm extends React.Component {
               id="lastName"
               name="lastName"
               label="Sobrenome"
+              value={sobrenome}
               fullWidth
               autoComplete="lname"
+              onChange={this.handleChange('sobrenome')}
             />
+            { errors.sobrenome &&
+              <FormHelperText id="name-error-text" error>{errors.sobrenome}</FormHelperText>
+             }
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -72,8 +92,13 @@ class PersonalForm extends React.Component {
               id="email"
               name="email"
               label="E-mail"
+              value={email}
               fullWidth
+              onChange={this.handleChange('email')}
             />
+             { errors.email &&
+              <FormHelperText id="name-error-text" error>{errors.email}</FormHelperText>
+             }
           </Grid>
           <Grid item xs={12}>
             <FormControl className={classNames(classes.margin, classes.textField)} fullWidth>
@@ -81,7 +106,8 @@ class PersonalForm extends React.Component {
               <Input
                 id="adornment-password"
                 type={this.state.showPassword ? 'text' : 'password'}
-                value={this.state.password}
+                value={senha}
+                onChange={this.handleChange('senha')}
                 //onChange={this.handleChange('password')}
                 endAdornment={
                   <InputAdornment position="end">
@@ -94,7 +120,9 @@ class PersonalForm extends React.Component {
                   </InputAdornment>
                 }
               />
-              <FormHelperText id="weight-helper-text">{'A senha poderá ser usada para fazer login no aplicativo do evento'}</FormHelperText>
+              { errors.senha ?
+              <FormHelperText id="name-error-text" error>{errors.senha}</FormHelperText> : <FormHelperText id="weight-helper-text">{'A senha poderá ser usada para fazer login no aplicativo do evento'}</FormHelperText>
+             }
             </FormControl>
           </Grid>
         </Grid>
@@ -103,4 +131,12 @@ class PersonalForm extends React.Component {
   }
 }
 
-export default withStyles(styles)(PersonalForm);
+const mapStateToProps = state => ({
+  nome: state.userReducer.nome,
+  sobrenome: state.userReducer.sobrenome,
+  email: state.userReducer.email,
+  senha: state.userReducer.senha,
+  errors: state.userReducer.errors,
+});
+
+export default connect(mapStateToProps, { ...CreatorsUser })(withStyles(styles)(PersonalForm));
