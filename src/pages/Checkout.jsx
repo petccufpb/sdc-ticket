@@ -15,7 +15,7 @@ import classNames from 'classnames';
 import blue from '@material-ui/core/colors/blue';
 import pink from '@material-ui/core/colors/pink';
 
-import { PersonalForm, PaymentForm, Review } from '../components';
+import { PersonalForm, EducationForm, Review } from '../components';
 import LogoSdcBranca from '../assets/logo-sem-fundo-branca.png';
 
 const theme = createMuiTheme({
@@ -80,14 +80,14 @@ const styles = theme => ({
 
 });
 
-const steps = ['Dados pessoais', 'Payment details', 'Review your order'];
+const steps = ['Dados pessoais', 'Escolaridade', 'Review your order'];
 
 function getStepContent(step) {
   switch (step) {
     case 0:
       return <PersonalForm />;
     case 1:
-      return <PaymentForm />;
+      return <EducationForm />;
     case 2:
       return <Review />;
     default:
@@ -174,7 +174,7 @@ class Checkout extends React.Component {
                     <div className={classes.buttons}>
                       {activeStep !== 0 && (
                         <Button onClick={this.handleBack} className={classes.button}>
-                          Back
+                          Voltar
                         </Button>
                       )}
                       <Button
@@ -183,7 +183,7 @@ class Checkout extends React.Component {
                         onClick={this.handleNext}
                         className={classes.button}
                       >
-                        {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                        {activeStep === steps.length - 1 ? 'Place order' : 'Próximo'}
                       </Button>
                     </div>
                   </React.Fragment>

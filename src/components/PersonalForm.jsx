@@ -94,6 +94,7 @@ class PersonalForm extends React.Component {
                   </InputAdornment>
                 }
               />
+              <FormHelperText id="weight-helper-text">{'A senha poderá ser usada para fazer login no aplicativo do evento'}</FormHelperText>
             </FormControl>
           </Grid>
         </Grid>

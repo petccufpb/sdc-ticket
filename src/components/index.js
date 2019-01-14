@@ -1,5 +1,5 @@
 import PersonalForm from './PersonalForm';
-import PaymentForm from './PaymentForm';
+import EducationForm from './EducationForm';
 import Review from './Review';
 
-export { PersonalForm, PaymentForm, Review };
+export { PersonalForm, EducationForm, Review };
