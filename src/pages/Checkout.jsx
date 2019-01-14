@@ -16,11 +16,16 @@ import blue from '@material-ui/core/colors/blue';
 import pink from '@material-ui/core/colors/pink';
 import * as Yup from 'yup';
 import { connect } from 'react-redux';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import * as jsPDF from 'jspdf';
+import QRious from 'qrious';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { Creators as CreatorsUser } from '../store/ducks/user';
 import { PersonalForm, EducationForm, Review } from '../components';
+// -- imagens
 import LogoSdcBranca from '../assets/logo-sem-fundo-branca.png';
+import { IngressoDia1, IngressoDia2, IngressoDia3, IngressoDia4, IngressoDia5 }  from '../assets/IngressosBase64';
+
 
 const theme = createMuiTheme({
   palette: {
@@ -33,6 +38,9 @@ const theme = createMuiTheme({
 const styles = theme => ({
   appBar: {
     position: 'relative',
+  },
+  progress: {
+    margin: theme.spacing.unit * 2,
   },
   layout: {
     width: 'auto',
@@ -129,6 +137,7 @@ const cursoSchema =  Yup.string()
 class Checkout extends React.Component {
   state = {
     activeStep: 0,
+    loading: false,
   };
 
   async validateNomeSchema() {
@@ -185,6 +194,14 @@ class Checkout extends React.Component {
     }); 
   }
 
+  generateQrCode(id, dia) {
+    const qr = new QRious({
+      value: id.concat('@dia').concat(dia),
+      size: 200
+    });
+    return qr.toDataURL();
+  }
+
 
   handleNext = async() => {
     if (this.state.activeStep === 0) {
@@ -209,10 +226,35 @@ class Checkout extends React.Component {
           activeStep: state.activeStep + 1,
         }));
       }
-    } else {
+    }
+    else {
       this.setState(state => ({
-        activeStep: state.activeStep + 1,
+        activeStep: state.activeStep + 1, loading: true,
       }));
+
+      const doc = new jsPDF('p', 'pt', 'a4');
+      const id = '42adc6c3-078e-4bd2-ad3e-d756cb82882b';
+
+      doc.addImage(IngressoDia1, 'PNG', 0, 0, 595, 151);
+      doc.addImage(this.generateQrCode(id, '1'), 'PNG', 235, 26, 84, 84);
+
+      doc.addImage(IngressoDia2, 'PNG', 0, 160, 595, 151);
+      doc.addImage(this.generateQrCode(id, '2'), 'PNG', 235, 160+26, 84, 84);
+      
+      doc.addImage(IngressoDia3, 'PNG', 0, 2*160, 595, 151);
+      doc.addImage(this.generateQrCode(id, '3'), 'PNG', 235, 2*160+26, 84, 84);
+      
+      doc.addImage(IngressoDia4, 'PNG', 0, 3*160, 595, 151);
+      doc.addImage(this.generateQrCode(id, '4'), 'PNG', 235, 3*160+26, 84, 84);
+      
+      doc.addImage(IngressoDia5, 'PNG', 0, 4*160, 595, 151);
+      doc.addImage(this.generateQrCode(id, '5'), 'PNG', 235, 4*160+26, 84, 84);
+
+      doc.save('ingressos.pdf');
+
+      this.setState({
+        loading: false,
+      });
     }
   };
 
@@ -274,6 +316,9 @@ class Checkout extends React.Component {
                       {'Agradecemos sua inscrição.'}
                     </Typography>
                     <Typography variant="subtitle1">
+                      {'O dowload dos ingressos será feito automaticamente. Compareça no dia do evento portando seu ticket.'}
+                    </Typography>
+                    <Typography variant="subtitle1">
                       {'Você poderá logar no aplicativo do evento, disponível apenas para plataforma Android, com e-mail e senha cadastrados aqui.'}
                     </Typography>
                   </React.Fragment>
@@ -286,6 +331,8 @@ class Checkout extends React.Component {
                           Voltar
                         </Button>
                       )}
+                      { this.state.loading &&
+                      <CircularProgress className={classes.progress} /> }
                       <Button
                         variant="contained"
                         color="primary"
