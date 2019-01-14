@@ -30,3 +30,34 @@
     transform: rotate(360deg);
   }
 }
+
+h1 {
+  font-family: 'Roboto';
+  font-size: 35px;
+  font-weight: 300;
+  padding: 5px;
+  margin: 0;
+  color: #fafafa;
+}
+
+h2 {
+  font-family: 'Roboto';
+  font-size: 25px;
+  font-weight: 300;
+  padding: 5px;
+  margin: 0;
+  color: #424242;
+}
+
+h6 {
+  font-family: 'Roboto';
+  font-size: 18px;
+  font-weight: 400;
+  color: #fff;
+}
+
+p {
+  font-family: 'Roboto';
+  font-weight: 300;
+  color: #fafafa;
+}
