@@ -8,11 +8,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 
 const products = [
-  { name: 'Product 1', desc: 'A nice thing', price: '$9.99' },
-  { name: 'Product 2', desc: 'Another thing', price: '$3.45' },
-  { name: 'Product 3', desc: 'Something else', price: '$6.51' },
-  { name: 'Product 4', desc: 'Best thing of all', price: '$14.11' },
-  { name: 'Shipping', desc: '', price: 'Free' },
+  { name: 'Ingresso - 11/02', desc: 'Palestras, Jogos, Corrida de Rôbos, Jam Session', price: 'Grátis' },
+  { name: 'Ingresso - 12/02', desc: 'Palestras, Feira de Laboratórios, Workshop, Cinema', price: 'Grátis' },
+  { name: 'Ingresso - 13/02', desc: 'Palestras, Mesas Redondas, Jogos de Tabuleiro, Maratona de Programação', price: 'Grátis' },
+  { name: 'Ingresso - 14/02', desc: 'Minicursos', price: 'Grátis' },
+  { name: 'Ingresso - 15/02', desc: 'Hackathon', price: 'Grátis' },
 ];
 const addresses = ['1 Material-UI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
 const payments = [
@@ -38,8 +38,8 @@ function Review(props) {
   const { classes } = props;
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom>
-        Order summary
+      <Typography component="h6" variant="p" gutterBottom>
+        {'Revise seu pedido'}
       </Typography>
       <List disablePadding>
         {products.map(product => (
@@ -51,33 +51,30 @@ function Review(props) {
         <ListItem className={classes.listItem}>
           <ListItemText primary="Total" />
           <Typography variant="subtitle1" className={classes.total}>
-            $34.06
+            {'R$ 0,00'}
           </Typography>
         </ListItem>
       </List>
       <Grid container spacing={16}>
         <Grid item xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom className={classes.title}>
-            Shipping
+          <Typography className={classes.title} component="h6" variant="p" gutterBottom>
+            {'Dados pessoais'}
           </Typography>
-          <Typography gutterBottom>John Smith</Typography>
-          <Typography gutterBottom>{addresses.join(', ')}</Typography>
+          <Typography gutterBottom>{'Marcos Henrique Alves da Silva'}</Typography>
+          <Typography gutterBottom>{'alves.henrique.marcos@gmail.com'}</Typography>
         </Grid>
         <Grid item container direction="column" xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom className={classes.title}>
-            Payment details
+          <Typography className={classes.title} component="h6" variant="p" gutterBottom>
+            {'Escolaridade'}
           </Typography>
           <Grid container>
-            {payments.map(payment => (
-              <React.Fragment key={payment.name}>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.name}</Typography>
+                <Grid item xs={12}>
+                  <Typography gutterBottom>{'Universidade Federal da Paraíba'}</Typography>
                 </Grid>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.detail}</Typography>
+              
+                <Grid item xs={12}>
+                  <Typography gutterBottom>{'Ciência da Computação'}</Typography>
                 </Grid>
-              </React.Fragment>
-            ))}
           </Grid>
         </Grid>
       </Grid>

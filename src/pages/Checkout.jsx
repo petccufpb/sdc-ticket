@@ -80,7 +80,7 @@ const styles = theme => ({
 
 });
 
-const steps = ['Dados pessoais', 'Escolaridade', 'Review your order'];
+const steps = ['Dados pessoais', 'Escolaridade', 'Revise seu pedido'];
 
 function getStepContent(step) {
   switch (step) {
@@ -161,11 +161,10 @@ class Checkout extends React.Component {
                 {activeStep === steps.length ? (
                   <React.Fragment>
                     <Typography variant="h5" gutterBottom>
-                      Thank you for your order. 
+                      {'Agradecemos sua inscrição.'}
                     </Typography>
                     <Typography variant="subtitle1">
-                      Your order number is #2001539. We have emailed your order confirmation, and will
-                      send you an update when your order has shipped.
+                      {'Você poderá logar no aplicativo do evento, disponível apenas para plataforma Android, com e-mail e senha cadastrados aqui.'}
                     </Typography>
                   </React.Fragment>
                 ) : (
@@ -183,7 +182,7 @@ class Checkout extends React.Component {
                         onClick={this.handleNext}
                         className={classes.button}
                       >
-                        {activeStep === steps.length - 1 ? 'Place order' : 'Próximo'}
+                        {activeStep === steps.length - 1 ? 'Finalizar Pedido' : 'Próximo'}
                       </Button>
                     </div>
                   </React.Fragment>
