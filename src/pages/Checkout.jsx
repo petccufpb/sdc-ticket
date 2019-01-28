@@ -19,6 +19,8 @@ import { connect } from 'react-redux';
 import * as jsPDF from 'jspdf';
 import QRious from 'qrious';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import * as firebase from 'firebase';
+import { withSnackbar } from 'notistack';
 
 import { Creators as CreatorsUser } from '../store/ducks/user';
 import { PersonalForm, EducationForm, Review } from '../components';
@@ -89,7 +91,12 @@ const styles = theme => ({
     width: 40,
     height: 45,
   },
-
+  loading: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    flex: 1,
+  },
 });
 
 const steps = ['Dados pessoais', 'Escolaridade', 'Revise seu pedido'];
@@ -125,6 +132,7 @@ const emailSchema = Yup.string()
 const senhaSchema = Yup.string()
     .required('Senha é obrigatório')
     .min(8, 'Sua senha deve conter no mínimo 8 dígitos')
+    .matches(/^\d+$/, 'Sua senha deve conter apenas dígitos')
 
 const nomeInstituicaoSchema = Yup.string()
 .required('Nome da Instituição é obrigatório')
@@ -228,35 +236,67 @@ class Checkout extends React.Component {
       }
     }
     else {
-      this.setState(state => ({
-        activeStep: state.activeStep + 1, loading: true,
-      }));
+      this.setState({ loading: true });
+      //--
+      const id = await this.writeUserFirebase();
 
-      const doc = new jsPDF('p', 'pt', 'a4');
-      const id = '42adc6c3-078e-4bd2-ad3e-d756cb82882b';
+      if (id) {
+        await this.generateTicket(id);
 
-      doc.addImage(IngressoDia1, 'PNG', 0, 0, 595, 151);
-      doc.addImage(this.generateQrCode(id, '1'), 'PNG', 235, 26, 84, 84);
-
-      doc.addImage(IngressoDia2, 'PNG', 0, 160, 595, 151);
-      doc.addImage(this.generateQrCode(id, '2'), 'PNG', 235, 160+26, 84, 84);
-      
-      doc.addImage(IngressoDia3, 'PNG', 0, 2*160, 595, 151);
-      doc.addImage(this.generateQrCode(id, '3'), 'PNG', 235, 2*160+26, 84, 84);
-      
-      doc.addImage(IngressoDia4, 'PNG', 0, 3*160, 595, 151);
-      doc.addImage(this.generateQrCode(id, '4'), 'PNG', 235, 3*160+26, 84, 84);
-      
-      doc.addImage(IngressoDia5, 'PNG', 0, 4*160, 595, 151);
-      doc.addImage(this.generateQrCode(id, '5'), 'PNG', 235, 4*160+26, 84, 84);
-
-      doc.save('ingressos.pdf');
-
-      this.setState({
-        loading: false,
-      });
+        this.setState(state => ({
+          activeStep: state.activeStep + 1, loading: false,
+        }));
+      }
     }
   };
+
+   // retorna o codigo qrcode id_do_usuario
+   async writeUserFirebase() {
+    const { nome, sobrenome, nomeInstituicao, curso, email, senha, fera } = this.props;
+    //--
+    try {
+      await firebase.auth().createUserWithEmailAndPassword(email, senha);
+      const uid = firebase.auth().currentUser.uid;
+      const nomeCompleto = `${nome} ${sobrenome}`;
+       // --
+      await firebase.database()
+        .ref('v2/usuarios/'.concat(uid))
+        .set({ 
+          id: uid, 
+          nome: nomeCompleto,
+          nomeInstituicao,
+          curso,
+          email,
+          fera: fera==='yes',
+          modo: 'web' });
+      return uid;
+    } catch (e) {
+      this.props.enqueueSnackbar(String(e), { variant: 'error', autoHideDuration: 4000 });
+      //--
+      this.setState({ activeStep: 0, loading: false });
+    }
+  }
+
+  async generateTicket(id) {
+    const doc = new jsPDF('p', 'pt', 'a4');
+    //--
+    doc.addImage(IngressoDia1, 'PNG', 0, 0, 595, 151);
+    doc.addImage(this.generateQrCode(id, '1'), 'PNG', 235, 26, 84, 84);
+
+    doc.addImage(IngressoDia2, 'PNG', 0, 160, 595, 151);
+    doc.addImage(this.generateQrCode(id, '2'), 'PNG', 235, 160+26, 84, 84);
+    
+    doc.addImage(IngressoDia3, 'PNG', 0, 2*160, 595, 151);
+    doc.addImage(this.generateQrCode(id, '3'), 'PNG', 235, 2*160+26, 84, 84);
+    
+    doc.addImage(IngressoDia4, 'PNG', 0, 3*160, 595, 151);
+    doc.addImage(this.generateQrCode(id, '4'), 'PNG', 235, 3*160+26, 84, 84);
+    
+    doc.addImage(IngressoDia5, 'PNG', 0, 4*160, 595, 151);
+    doc.addImage(this.generateQrCode(id, '5'), 'PNG', 235, 4*160+26, 84, 84);
+
+    doc.save('ingressos.pdf', { returnPromise: true });
+  }
 
   handleBack = () => {
     this.setState(state => ({
@@ -316,31 +356,41 @@ class Checkout extends React.Component {
                       {'Agradecemos sua inscrição.'}
                     </Typography>
                     <Typography variant="subtitle1">
-                      {'O dowload dos ingressos será feito automaticamente. Compareça no dia do evento portando seu ticket.'}
+                      {'Compareça no dia do evento portando seu ticket. Você poderá logar no aplicativo do evento, disponível apenas para plataforma Android, com e-mail e senha cadastrados aqui.'}
                     </Typography>
-                    <Typography variant="subtitle1">
-                      {'Você poderá logar no aplicativo do evento, disponível apenas para plataforma Android, com e-mail e senha cadastrados aqui.'}
-                    </Typography>
+                    {/* <Typography variant="subtitle1">
+                      {''}
+                    </Typography> */}
                   </React.Fragment>
                 ) : (
                   <React.Fragment>
                     {getStepContent(activeStep)}
                     <div className={classes.buttons}>
-                      {activeStep !== 0 && (
-                        <Button onClick={this.handleBack} className={classes.button}>
-                          Voltar
-                        </Button>
-                      )}
-                      { this.state.loading &&
-                      <CircularProgress className={classes.progress} /> }
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={this.handleNext}
-                        className={classes.button}
-                      >
-                        {activeStep === steps.length - 1 ? 'Finalizar Pedido' : 'Próximo'}
-                      </Button>
+                    { this.state.loading ?
+                      (
+                        <div className={classes.loading}>
+                          <CircularProgress size={50} className={classes.progress} />
+                        </div>
+                      )
+                      :
+                      (
+                        <div>
+                          {activeStep !== 0 && (
+                          <Button onClick={this.handleBack} className={classes.button}>
+                            Voltar
+                          </Button>
+                        )}
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={this.handleNext}
+                            className={classes.button}
+                          >
+                            {activeStep === steps.length - 1 ? 'Finalizar Pedido' : 'Próximo'}
+                          </Button>
+                        </div>
+                      )
+                    }
                     </div>
                   </React.Fragment>
                 )}
@@ -365,6 +415,7 @@ const mapStateToProps = state => ({
   email: state.userReducer.email,
   nomeInstituicao: state.userReducer.nomeInstituicao,
   curso: state.userReducer.curso,
+  fera: state.userReducer.fera,
 });
 
-export default connect(mapStateToProps, { ...CreatorsUser })(withStyles(styles)(Checkout));
+export default connect(mapStateToProps, { ...CreatorsUser })(withSnackbar((withStyles(styles)(Checkout))));

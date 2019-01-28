@@ -4,16 +4,16 @@ const Types = {
   SET_ERRORS: 'SET_ERRORS',
 };
 
-const INITIAL_STATE_DEV = {
-  nome: 'Marcos',
-  sobrenome: 'Henrique',
-  email: 'alves.henrique.marcos@gmail.com',
-  senha: '12345678',
-  nomeInstituicao: 'Universidade Federal da Paraíba',
-  curso: 'Ciência da Computação',
-  fera: false,
-  errors: {}
-};
+// const INITIAL_STATE_DEV = {
+//   nome: 'Marcos',
+//   sobrenome: 'Alves',
+//   email: 'alvess@gmail.com',
+//   senha: '12345678',
+//   nomeInstituicao: 'Universidade Federal da Paraíba',
+//   curso: 'Ciência da Computação',
+//   fera: false,
+//   errors: {}
+// };
 
 const INITIAL_STATE = {
   nome: '',

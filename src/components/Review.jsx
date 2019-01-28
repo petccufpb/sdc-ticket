@@ -13,17 +13,10 @@ import { Creators as CreatorsUser } from '../store/ducks/user';
 
 const products = [
   { name: 'Ingresso - 11/02', desc: 'Palestras, Jogos, Corrida de Rôbos, Jam Session', price: 'Grátis' },
-  { name: 'Ingresso - 12/02', desc: 'Palestras, Feira de Laboratórios, Workshop, Cinema', price: 'Grátis' },
+  { name: 'Ingresso - 12/02', desc: 'Palestras, Feira de Laboratórios, Workshop', price: 'Grátis' },
   { name: 'Ingresso - 13/02', desc: 'Palestras, Mesas Redondas, Jogos de Tabuleiro, Maratona de Programação', price: 'Grátis' },
   { name: 'Ingresso - 14/02', desc: 'Minicursos', price: 'Grátis' },
   { name: 'Ingresso - 15/02', desc: 'Hackathon', price: 'Grátis' },
-];
-const addresses = ['1 Material-UI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
-const payments = [
-  { name: 'Card type', detail: 'Visa' },
-  { name: 'Card holder', detail: 'Mr John Smith' },
-  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
-  { name: 'Expiry date', detail: '04/2024' },
 ];
 
 const styles = theme => ({
