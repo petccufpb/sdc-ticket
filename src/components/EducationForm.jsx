@@ -14,6 +14,10 @@ class EducationForm extends React.Component {
     this.props.setDadosFormulario({ [prop]: event.target.value, errors: { ...this.props.errors, [prop]: '' }});
   };
 
+  handleCheckBox = prop => event => {
+    this.props.setDadosFormulario({ [prop]: event.target.checked, errors: { ...this.props.errors, [prop]: '' }});
+  };
+
   render() {
     const { nomeInstituicao, curso, fera, errors } = this.props;
     return (
@@ -36,7 +40,7 @@ class EducationForm extends React.Component {
           </Grid>
           <Grid item xs={12}>
             <FormControlLabel
-              control={<Checkbox color="secondary" name="saveCard" value={fera ? "yes": "no"} onChange={this.handleChange('fera')} />}
+              control={<Checkbox color="secondary" name="saveCard" checked={fera} value={"fera"} onChange={this.handleCheckBox('fera')} />}
               label="Sou FERA 2018.2 da Universidade Federal da Paraíba"
             />
           </Grid>
