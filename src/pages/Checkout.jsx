@@ -238,15 +238,15 @@ class Checkout extends React.Component {
     else {
       this.setState({ loading: true });
       //--
-      const id = await this.writeUserFirebase();
+      //const id = await this.writeUserFirebase();
 
-      if (id) {
-        await this.generateTicket(id);
+      //if (id) {
+        await this.generateTicket('id');
 
         this.setState(state => ({
           activeStep: state.activeStep + 1, loading: false,
         }));
-      }
+      //}
     }
   };
 
@@ -260,13 +260,14 @@ class Checkout extends React.Component {
       const nomeCompleto = `${nome} ${sobrenome}`;
        // --
       await firebase.database()
-        .ref('v2/usuarios/'.concat(uid))
+        .ref('v1/usuarios/'.concat(uid))
         .set({ 
           id: uid, 
           nome: nomeCompleto,
           nomeInstituicao,
           curso,
           email,
+          versao: "3",
           fera: fera==='yes',
           modo: 'web' });
       return uid;
@@ -281,19 +282,19 @@ class Checkout extends React.Component {
     const doc = new jsPDF('p', 'pt', 'a4');
     //--
     doc.addImage(IngressoDia1, 'PNG', 0, 0, 595, 151);
-    doc.addImage(this.generateQrCode(id, '1'), 'PNG', 235, 26, 84, 84);
+    doc.addImage(this.generateQrCode(id, '1'), 'PNG', 254, 32, 90, 90);
 
     doc.addImage(IngressoDia2, 'PNG', 0, 160, 595, 151);
-    doc.addImage(this.generateQrCode(id, '2'), 'PNG', 235, 160+26, 84, 84);
+    doc.addImage(this.generateQrCode(id, '2'), 'PNG', 254, 160+32, 90, 90);
     
     doc.addImage(IngressoDia3, 'PNG', 0, 2*160, 595, 151);
-    doc.addImage(this.generateQrCode(id, '3'), 'PNG', 235, 2*160+26, 84, 84);
+    doc.addImage(this.generateQrCode(id, '3'), 'PNG', 254, 2*160+32, 90, 90);
     
     doc.addImage(IngressoDia4, 'PNG', 0, 3*160, 595, 151);
-    doc.addImage(this.generateQrCode(id, '4'), 'PNG', 235, 3*160+26, 84, 84);
+    doc.addImage(this.generateQrCode(id, '4'), 'PNG', 254, 3*160+32, 90, 90);
     
     doc.addImage(IngressoDia5, 'PNG', 0, 4*160, 595, 151);
-    doc.addImage(this.generateQrCode(id, '5'), 'PNG', 235, 4*160+26, 84, 84);
+    doc.addImage(this.generateQrCode(id, '5'), 'PNG', 254, 4*160+32, 90, 90);
 
     doc.save('ingressos.pdf', { returnPromise: true });
   }
