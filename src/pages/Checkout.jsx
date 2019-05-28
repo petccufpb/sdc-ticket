@@ -238,15 +238,15 @@ class Checkout extends React.Component {
     else {
       this.setState({ loading: true });
       //--
-      //const id = await this.writeUserFirebase();
+      const id = await this.writeUserFirebase();
 
-      //if (id) {
+      if (id) {
         await this.generateTicket('id');
 
         this.setState(state => ({
           activeStep: state.activeStep + 1, loading: false,
         }));
-      //}
+      }
     }
   };
 
@@ -260,7 +260,7 @@ class Checkout extends React.Component {
       const nomeCompleto = `${nome} ${sobrenome}`;
        // --
       await firebase.database()
-        .ref('v1/usuarios/'.concat(uid))
+        .ref('v3/usuarios/'.concat(uid))
         .set({ 
           id: uid, 
           nome: nomeCompleto,

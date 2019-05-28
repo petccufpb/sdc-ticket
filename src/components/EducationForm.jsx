@@ -41,7 +41,7 @@ class EducationForm extends React.Component {
           <Grid item xs={12}>
             <FormControlLabel
               control={<Checkbox color="secondary" name="saveCard" checked={fera} value={"fera"} onChange={this.handleCheckBox('fera')} />}
-              label="Sou FERA 2018.2 da Universidade Federal da Paraíba"
+              label="Sou FERA 2019.1 da Universidade Federal da Paraíba"
             />
           </Grid>
         </Grid>
