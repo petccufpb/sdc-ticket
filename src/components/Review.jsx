@@ -13,8 +13,8 @@ import { Creators as CreatorsUser } from '../store/ducks/user';
 
 const products = [
   { name: 'Ingresso - 03/06', desc: 'Palestras, Game Time, Corrida de Rôbos', price: 'Grátis' },
-  { name: 'Ingresso - 04/06', desc: 'Palestras, Feira de Laboratórios', price: 'Grátis' },
-  { name: 'Ingresso - 05/06', desc: 'Palestras, Maratona de Programação', price: 'Grátis' },
+  { name: 'Ingresso - 04/06', desc: 'Palestras, Feira de Laboratórios, Oficina SEBRAE', price: 'Grátis' },
+  { name: 'Ingresso - 05/06', desc: 'Palestras, Maratona de Programação, Jam Session', price: 'Grátis' },
   { name: 'Ingresso - 06/06', desc: 'Minicursos', price: 'Grátis' },
   { name: 'Ingresso - 07/06', desc: 'Cine-dattebayo', price: 'Grátis' },
 ];
